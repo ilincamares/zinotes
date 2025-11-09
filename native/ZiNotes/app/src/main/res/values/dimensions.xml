@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="card_content">40.dp</dimen>
+    <dimen name="coin_size">70.dp</dimen>
+</resources>
