@@ -1,5 +1,6 @@
 package com.example.zinotes.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.zinotes.data.DataSource
@@ -27,6 +28,7 @@ class ListViewModel: ViewModel() {
                 _uiState.value = ListUiState.Success(data)
             } catch (e: Exception) {
                 _uiState.value = ListUiState.Error("Failed to load data")
+                Log.e("ListViewModel", e.toString())
             }
         }
     }

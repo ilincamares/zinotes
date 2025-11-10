@@ -16,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -41,6 +42,8 @@ import com.example.zinotes.ui.viewmodel.ListViewModel
 
 @Composable
 fun ListScreen(
+    onItemClick: (String) -> Unit,
+    onAddClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ListViewModel = viewModel()
 ) {
@@ -48,7 +51,19 @@ fun ListScreen(
 
     when (val state = uiState) {
         is ListUiState.Loading -> LoadingScreen(modifier = modifier)
-        is ListUiState.Success -> HanziList(state.hanziList, modifier = modifier)
+        is ListUiState.Success -> {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom,
+                modifier = modifier.fillMaxSize()
+            ) {
+                AddButton(onAddClick)
+                HanziList(
+                    hanziList = state.hanziList,
+                    onItemClick = onItemClick,
+                )
+            }
+        }
         is ListUiState.Error -> ErrorScreen(state.message, modifier = modifier)
     }
 
@@ -74,38 +89,46 @@ fun ErrorScreen(message: String, modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun AddButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Image(
+        painter = painterResource(R.drawable.chinese_coin),
+        contentDescription = null,
+        modifier = modifier
+            .size(100.dp)
+            .clickable(
+                onClick = onClick
+            )
+
+    )
+}
 
 @Composable
 fun HanziList(
     hanziList: List<Hanzi>,
+    onItemClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ){
-        Image(
-            painter = painterResource(R.drawable.chinese_coin),
-            contentDescription = null,
-            modifier = Modifier
-                .size(dimensionResource(R.dimen.coin_size))
-                .clickable(
-                onClick = {}
+    LazyColumn(modifier = modifier) {
+        items(hanziList.size) {
+            HanziCard(
+                hanzi = hanziList[it],
+                onSeeMoreClick = onItemClick,
+                modifier = Modifier.padding(8.dp)
             )
-        )
-        LazyColumn(modifier = modifier) {
-            items(hanziList.size) {
-                HanziCard(
-                    hanzi = hanziList[it],
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
         }
     }
 }
 
 @Composable
-fun HanziCard(hanzi: Hanzi, modifier: Modifier = Modifier){
+fun HanziCard(
+    hanzi: Hanzi,
+    onSeeMoreClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+){
     Card(
         modifier = modifier,
         shape = RectangleShape,
@@ -136,12 +159,17 @@ fun HanziCard(hanzi: Hanzi, modifier: Modifier = Modifier){
                     text = hanzi.pinyin + hanzi.tones.map { c -> c.toString() }.reduce { acc, s -> "$acc,$s" },
                 )
                 Text(
-                    text = hanzi.definitions[0],
+                    text = hanzi.definitions?.get(0) ?: "",
                 )
-                Icon(
-                    painter = painterResource(R.drawable.slanted),
-                    contentDescription = null,
-                )
+                IconButton(
+                    onClick = { onSeeMoreClick(hanzi.id) },
+                    modifier = Modifier.padding(1.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.slanted),
+                        contentDescription = null,
+                    )
+                }
             }
         }
     }
@@ -151,6 +179,22 @@ fun HanziCard(hanzi: Hanzi, modifier: Modifier = Modifier){
 @Composable
 fun HanziCardPreview() {
     ZiNotesTheme {
-        HanziCard(DataSource.hanziList[0])
+        HanziCard(DataSource.hanziList[0], {})
+    }
+}
+
+@Preview
+@Composable
+fun HanziListPreview() {
+    ZiNotesTheme {
+        HanziList(DataSource.hanziList, {})
+    }
+}
+
+@Preview
+@Composable
+fun AddButtonPreview() {
+    ZiNotesTheme {
+        AddButton({})
     }
 }

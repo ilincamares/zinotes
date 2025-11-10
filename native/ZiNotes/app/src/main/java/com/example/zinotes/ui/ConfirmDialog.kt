@@ -28,7 +28,8 @@ import com.example.zinotes.R
 import com.example.zinotes.ui.theme.ZiNotesTheme
 
 @Composable
-fun ConfirmDeleteDialog(
+fun ConfirmDialog(
+    text: String,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier
@@ -54,7 +55,7 @@ fun ConfirmDeleteDialog(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "Are you sure you want to delete this hanzi?",
+                    text = text,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = Color.White,
                         textAlign = TextAlign.Center
@@ -107,7 +108,8 @@ fun ConfirmDeleteDialog(
 @Composable
 fun ConfirmDeleteDialogPreview(){
     ZiNotesTheme {
-        ConfirmDeleteDialog(
+        ConfirmDialog(
+            "Are you sure you want to delete this hanzi?",
             onDismiss = {},
             onConfirm = {}
         )

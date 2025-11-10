@@ -14,9 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.zinotes.ui.AddScreen
+import com.example.zinotes.ui.DetailScreen
+import com.example.zinotes.ui.EditScreen
 import com.example.zinotes.ui.ListScreen
 import com.example.zinotes.ui.theme.ZiNotesTheme
 
@@ -52,8 +57,48 @@ fun ZiNotesApp(
         navController = navController,
         startDestination = "list"
     ) {
+        // LIST SCREEN
         composable(route = "list") {
-            ListScreen(modifier = modifier)
+            ListScreen(
+                modifier = modifier,
+                onItemClick = { hanziId ->
+                    navController.navigate("detail/$hanziId")
+                },
+                onAddClick = {
+                    navController.navigate("add")
+                },
+            )
+        }
+        // ADD SCREEN
+        composable(route = "add") {
+            AddScreen(
+                onNavigateBack = {navController.popBackStack()}
+            )
+        }
+        // DETAIL SCREEN
+        composable(
+            route = "detail/{hanziId}",
+            arguments = listOf(navArgument("hanziId") { type = NavType.StringType })
+        ){ backStackEntry ->
+            val hanziId = backStackEntry.arguments?.getString("hanziId")
+            DetailScreen(
+                hanziId = hanziId,
+                onNavigateToEdit = {hanziId ->
+                    navController.navigate("edit/$hanziId")
+                },
+                onNavigateBack = {navController.popBackStack()}
+            )
+        }
+        // EDIT SCREEN
+        composable(
+            route = "edit/{hanziId}",
+            arguments = listOf(navArgument("hanziId") { type = NavType.StringType })
+        ){ backStackEntry ->
+            val hanziId = backStackEntry.arguments?.getString("hanziId")
+            EditScreen(
+                hanziId = hanziId,
+                onNavigateBack = {navController.popBackStack()}
+            )
         }
     }
 

@@ -13,13 +13,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -27,11 +33,42 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zinotes.R
 import com.example.zinotes.ui.theme.ZiNotesTheme
+import com.example.zinotes.ui.viewmodel.EditViewModel
 
 @Composable
-fun HanziEditForm(modifier: Modifier = Modifier){
+fun EditScreen(
+    hanziId: String?,
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: EditViewModel = viewModel()
+){
+    LaunchedEffect(key1 = hanziId) {
+        if (hanziId != null) {
+            viewModel.loadHanzi(hanziId)
+        }
+    }
+
+    val uiState by viewModel.uiState.collectAsState()
+
+    // ERROR DIALOG
+    if (uiState.errorMessage != null) {
+        AlertDialog(
+            onDismissRequest = { viewModel.clearError() },
+            confirmButton = {
+                TextButton(onClick = { viewModel.clearError() }) {
+                    Text("OK")
+                }
+            },
+            title = { Text("Error") },
+            text = { Text(uiState.errorMessage ?: "Unknown error") },
+            icon = { Icon(Icons.Default.Warning, contentDescription = null) },
+            containerColor = MaterialTheme.colorScheme.errorContainer
+        )
+    }
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -56,8 +93,8 @@ fun HanziEditForm(modifier: Modifier = Modifier){
                 .width(250.dp)
         ) {
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = uiState.pinyin,
+                onValueChange = viewModel::updatePinyin,
                 label = { Text(text = "Pinyin",
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
@@ -67,8 +104,8 @@ fun HanziEditForm(modifier: Modifier = Modifier){
                 )
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = uiState.tones,
+                onValueChange = viewModel::updateTones,
                 label = { Text(text = "Tones",
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
@@ -78,8 +115,8 @@ fun HanziEditForm(modifier: Modifier = Modifier){
                 )
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = uiState.radicalNumber,
+                onValueChange = viewModel::updateRadicalNumber,
                 label = { Text(text = "Radical Number",
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
@@ -89,8 +126,8 @@ fun HanziEditForm(modifier: Modifier = Modifier){
                 )
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = uiState.strokeCount,
+                onValueChange = viewModel::updateStrokeCount,
                 label = { Text(text = "Stroke Count",
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
@@ -100,8 +137,8 @@ fun HanziEditForm(modifier: Modifier = Modifier){
                 )
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = uiState.hskLevel,
+                onValueChange = viewModel::updateHSKLevel,
                 label = { Text(text = "HSK Level",
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
@@ -111,8 +148,8 @@ fun HanziEditForm(modifier: Modifier = Modifier){
                 )
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = uiState.definitions,
+                onValueChange = viewModel::updateDefinitions,
                 label = { Text(text = "Definitions",
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
@@ -126,7 +163,7 @@ fun HanziEditForm(modifier: Modifier = Modifier){
                 modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)
             ) {
                 IconButton(
-                    onClick = {},
+                    onClick = onNavigateBack,
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = MaterialTheme.colorScheme.errorContainer
                     )
@@ -138,7 +175,9 @@ fun HanziEditForm(modifier: Modifier = Modifier){
                     )
                 }
                 IconButton(
-                    onClick = {},
+                    onClick = {
+                        viewModel.saveItem(onSuccess = onNavigateBack)
+                    },
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer
                     )
@@ -158,6 +197,6 @@ fun HanziEditForm(modifier: Modifier = Modifier){
 @Composable
 fun HanziEditFormPreview(){
     ZiNotesTheme {
-        HanziEditForm()
+        EditScreen("1",{})
     }
 }
