@@ -32,14 +32,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             ZiNotesTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)){
+                    Box(modifier = Modifier){
                         Image(
                             painter = painterResource(R.drawable.background),
                             contentDescription = null,
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.FillBounds,
                         )
-                        ZiNotesApp(modifier = Modifier.fillMaxSize())
+                        ZiNotesApp(modifier = Modifier.fillMaxSize().padding(innerPadding))
                     }
                 }
             }
@@ -82,7 +82,7 @@ fun ZiNotesApp(
         ){ backStackEntry ->
             val hanziId = backStackEntry.arguments?.getString("hanziId")
             DetailScreen(
-                hanziId = hanziId,
+                hanziId = hanziId?.toLong(),
                 onNavigateToEdit = {hanziId ->
                     navController.navigate("edit/$hanziId")
                 },
@@ -96,7 +96,7 @@ fun ZiNotesApp(
         ){ backStackEntry ->
             val hanziId = backStackEntry.arguments?.getString("hanziId")
             EditScreen(
-                hanziId = hanziId,
+                hanziId = hanziId?.toLong(),
                 onNavigateBack = {navController.popBackStack()}
             )
         }

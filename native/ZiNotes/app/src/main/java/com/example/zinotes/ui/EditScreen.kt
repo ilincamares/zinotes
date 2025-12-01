@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
@@ -30,20 +31,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zinotes.R
-import com.example.zinotes.ui.theme.ZiNotesTheme
+import com.example.zinotes.ui.viewmodel.AppViewModelProvider
 import com.example.zinotes.ui.viewmodel.EditViewModel
 
 @Composable
 fun EditScreen(
-    hanziId: String?,
+    hanziId: Long?,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: EditViewModel = viewModel()
+    viewModel: EditViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
     LaunchedEffect(key1 = hanziId) {
         if (hanziId != null) {
@@ -101,7 +103,10 @@ fun EditScreen(
                 ) },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     textAlign = TextAlign.Center
-                )
+                ),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                ),
             )
             OutlinedTextField(
                 value = uiState.tones,
@@ -112,7 +117,11 @@ fun EditScreen(
                 ) },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     textAlign = TextAlign.Center
-                )
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
+
             )
             OutlinedTextField(
                 value = uiState.radicalNumber,
@@ -123,7 +132,10 @@ fun EditScreen(
                 ) },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     textAlign = TextAlign.Center
-                )
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
             )
             OutlinedTextField(
                 value = uiState.strokeCount,
@@ -134,7 +146,10 @@ fun EditScreen(
                 ) },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     textAlign = TextAlign.Center
-                )
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
             )
             OutlinedTextField(
                 value = uiState.hskLevel,
@@ -145,7 +160,10 @@ fun EditScreen(
                 ) },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     textAlign = TextAlign.Center
-                )
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
             )
             OutlinedTextField(
                 value = uiState.definitions,
@@ -156,7 +174,10 @@ fun EditScreen(
                 ) },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     textAlign = TextAlign.Center
-                )
+                ),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                ),
             )
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -190,13 +211,5 @@ fun EditScreen(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HanziEditFormPreview(){
-    ZiNotesTheme {
-        EditScreen("1",{})
     }
 }

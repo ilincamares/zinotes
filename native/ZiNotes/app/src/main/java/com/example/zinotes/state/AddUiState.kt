@@ -1,4 +1,4 @@
-package com.example.zinotes.model
+package com.example.zinotes.state
 
 data class AddUiState (
     val pinyin: String = "",

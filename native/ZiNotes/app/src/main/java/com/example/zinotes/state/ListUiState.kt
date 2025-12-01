@@ -1,4 +1,6 @@
-package com.example.zinotes.model
+package com.example.zinotes.state
+
+import com.example.zinotes.room.Hanzi
 
 sealed interface ListUiState {
     data object Loading : ListUiState

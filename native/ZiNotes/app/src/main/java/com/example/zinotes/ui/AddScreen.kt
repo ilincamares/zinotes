@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
@@ -29,6 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,12 +39,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zinotes.R
 import com.example.zinotes.ui.theme.ZiNotesTheme
 import com.example.zinotes.ui.viewmodel.AddViewModel
+import com.example.zinotes.ui.viewmodel.AppViewModelProvider
 
 @Composable
 fun AddScreen(
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: AddViewModel = viewModel()
+    viewModel: AddViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
     val uiState by viewModel.uiState.collectAsState()
 
@@ -93,7 +97,10 @@ fun AddScreen(
                 ) },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     textAlign = TextAlign.Center
-                )
+                ),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                ),
             )
             OutlinedTextField(
                 value = uiState.tones,
@@ -104,7 +111,10 @@ fun AddScreen(
                 ) },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     textAlign = TextAlign.Center
-                )
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
             )
             OutlinedTextField(
                 value = uiState.radicalNumber,
@@ -115,7 +125,10 @@ fun AddScreen(
                 ) },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     textAlign = TextAlign.Center
-                )
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
             )
             OutlinedTextField(
                 value = uiState.strokeCount,
@@ -126,7 +139,10 @@ fun AddScreen(
                 ) },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     textAlign = TextAlign.Center
-                )
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
             )
             OutlinedTextField(
                 value = uiState.hskLevel,
@@ -137,7 +153,10 @@ fun AddScreen(
                 ) },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     textAlign = TextAlign.Center
-                )
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
             )
             OutlinedTextField(
                 value = uiState.definitions,
@@ -148,7 +167,10 @@ fun AddScreen(
                 ) },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     textAlign = TextAlign.Center
-                )
+                ),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                ),
             )
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,

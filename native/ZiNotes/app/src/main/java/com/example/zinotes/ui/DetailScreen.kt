@@ -34,23 +34,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zinotes.R
-import com.example.zinotes.data.DataSource
-import com.example.zinotes.model.DetailUiState
-import com.example.zinotes.model.Hanzi
-import com.example.zinotes.ui.theme.ZiNotesTheme
+import com.example.zinotes.state.DetailUiState
+import com.example.zinotes.room.Hanzi
+import com.example.zinotes.ui.viewmodel.AppViewModelProvider
 import com.example.zinotes.ui.viewmodel.DetailViewModel
 
 @Composable
 fun DetailScreen(
-    hanziId: String?,
-    onNavigateToEdit: (hanziId: String) -> Unit,
+    hanziId: Long?,
+    onNavigateToEdit: (hanziId: Long) -> Unit,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DetailViewModel = viewModel()
+    viewModel: DetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     LaunchedEffect(key1 = hanziId) {
         if (hanziId != null) {
@@ -113,7 +111,7 @@ fun DetailScreen(
 @Composable
 fun HanziDetailView(
     hanzi: Hanzi,
-    onEditClick: (hanziId: String) -> Unit,
+    onEditClick: (hanziId: Long) -> Unit,
     onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier){
     Box(
@@ -237,13 +235,5 @@ fun HanziDetailView(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HanziDetailViewPreview(){
-    ZiNotesTheme {
-        HanziDetailView(DataSource.hanziList[0], {}, {})
     }
 }

@@ -3,22 +3,21 @@ package com.example.zinotes.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.zinotes.data.DataSource
-import com.example.zinotes.model.AddUiState
-import com.example.zinotes.model.Hanzi
+import com.example.zinotes.data.HanziRepository
+import com.example.zinotes.state.AddUiState
+import com.example.zinotes.room.Hanzi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
 
-class EditViewModel: ViewModel() {
+class EditViewModel(private val repository: HanziRepository): ViewModel() {
     private val _uiState = MutableStateFlow(AddUiState())
     val uiState: StateFlow<AddUiState> = _uiState.asStateFlow()
 
-    private var currentHanziId: String? = null
+    private var currentHanziId: Long? = null
 
 
     fun updatePinyin(input: String) {
@@ -44,9 +43,9 @@ class EditViewModel: ViewModel() {
         _uiState.update { it.copy(errorMessage = null) }
     }
 
-    fun loadHanzi(id: String) {
+    fun loadHanzi(id: Long) {
         viewModelScope.launch {
-            val hanzi = DataSource.findHanziById(id)
+            val hanzi = repository.getHanzi(id)
 
             if (hanzi != null) {
                currentHanziId = hanzi.id
@@ -75,7 +74,7 @@ class EditViewModel: ViewModel() {
                 if(_uiState.value.tones.isEmpty())
                     throw Exception("Please enter the tones")
                 val newItem = Hanzi(
-                    id = currentHanziId ?: UUID.randomUUID().toString(),
+                    id = currentHanziId ?: 0,
                     pinyin = _uiState.value.pinyin,
                     tones = _uiState.value.tones.split(',').map{
                         it.trim().toInt()
@@ -85,7 +84,7 @@ class EditViewModel: ViewModel() {
                     strokeCount = _uiState.value.strokeCount.toIntOrNull(),
                     hskLevel = _uiState.value.hskLevel.toIntOrNull()
                 )
-                DataSource.updateHanzi(newItem)
+                repository.updateHanzi(newItem)
                 onSuccess()
 
             } catch (e: NumberFormatException) {

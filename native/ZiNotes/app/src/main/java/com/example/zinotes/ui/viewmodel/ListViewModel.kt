@@ -3,15 +3,15 @@ package com.example.zinotes.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.zinotes.data.DataSource
-import com.example.zinotes.model.ListUiState
-import kotlinx.coroutines.delay
+import com.example.zinotes.data.HanziRepository
+import com.example.zinotes.state.ListUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
-class ListViewModel: ViewModel() {
+class ListViewModel(private val repository: HanziRepository): ViewModel() {
     private val _uiState = MutableStateFlow<ListUiState>(ListUiState.Loading)
     val uiState: StateFlow<ListUiState> = _uiState.asStateFlow()
 
@@ -21,15 +21,14 @@ class ListViewModel: ViewModel() {
 
     private fun loadHanzi() {
         viewModelScope.launch {
-            delay(1000)
-
-            try{
-                val data = DataSource.hanziList
-                _uiState.value = ListUiState.Success(data)
-            } catch (e: Exception) {
-                _uiState.value = ListUiState.Error("Failed to load data")
-                Log.e("ListViewModel", e.toString())
-            }
+            repository.getHanziStream()
+                .catch { e ->
+                    _uiState.value = ListUiState.Error(e.message ?: "Unknown error")
+                    Log.e("ListViewModel", "Error loading hanzi", e)
+                }
+                .collect { hanziList ->
+                    _uiState.value = ListUiState.Success(hanziList)
+                }
         }
     }
 }

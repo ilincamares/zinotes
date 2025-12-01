@@ -28,24 +28,22 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.zinotes.ui.theme.ZiNotesTheme
 import com.example.zinotes.R
-import com.example.zinotes.data.DataSource
-import com.example.zinotes.model.Hanzi
-import com.example.zinotes.model.ListUiState
+import com.example.zinotes.room.Hanzi
+import com.example.zinotes.state.ListUiState
+import com.example.zinotes.ui.viewmodel.AppViewModelProvider
 import com.example.zinotes.ui.viewmodel.ListViewModel
 
 
 
 @Composable
 fun ListScreen(
-    onItemClick: (String) -> Unit,
+    onItemClick: (Long) -> Unit,
     onAddClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ListViewModel = viewModel()
+    viewModel: ListViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -109,7 +107,7 @@ fun AddButton(
 @Composable
 fun HanziList(
     hanziList: List<Hanzi>,
-    onItemClick: (String) -> Unit,
+    onItemClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier = modifier) {
@@ -126,7 +124,7 @@ fun HanziList(
 @Composable
 fun HanziCard(
     hanzi: Hanzi,
-    onSeeMoreClick: (String) -> Unit,
+    onSeeMoreClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ){
     Card(
@@ -172,29 +170,5 @@ fun HanziCard(
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun HanziCardPreview() {
-    ZiNotesTheme {
-        HanziCard(DataSource.hanziList[0], {})
-    }
-}
-
-@Preview
-@Composable
-fun HanziListPreview() {
-    ZiNotesTheme {
-        HanziList(DataSource.hanziList, {})
-    }
-}
-
-@Preview
-@Composable
-fun AddButtonPreview() {
-    ZiNotesTheme {
-        AddButton({})
     }
 }
