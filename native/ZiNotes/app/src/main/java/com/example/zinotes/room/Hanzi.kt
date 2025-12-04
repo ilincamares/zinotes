@@ -2,7 +2,10 @@ package com.example.zinotes.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
+@Serializable
 @Entity(tableName = "hanzi")
 data class Hanzi (
     @PrimaryKey(autoGenerate = true)
@@ -18,5 +21,14 @@ data class Hanzi (
 
     val hskLevel: Int? = null,
 
-    val definitions: List<String>? = null
+    val definitions: List<String>? = null,
+
+    @Transient
+    val isSynced: Boolean = true,
+
+    @Transient
+    val isDeleted: Boolean = false,
+
+    @Transient
+    val isNew: Boolean = false
 )
