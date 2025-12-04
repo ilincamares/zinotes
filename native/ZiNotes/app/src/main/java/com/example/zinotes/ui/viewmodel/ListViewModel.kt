@@ -15,6 +15,13 @@ class ListViewModel(private val repository: HanziRepository): ViewModel() {
     private val _uiState = MutableStateFlow<ListUiState>(ListUiState.Loading)
     val uiState: StateFlow<ListUiState> = _uiState.asStateFlow()
 
+    val isOnline: StateFlow<Boolean> = repository.connectionStatus
+
+    fun retryConnection() {
+        repository.retryConnection()
+    }
+
+
     init {
         loadHanzi()
     }

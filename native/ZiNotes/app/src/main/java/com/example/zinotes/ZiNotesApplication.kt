@@ -2,7 +2,6 @@ package com.example.zinotes
 
 import android.app.Application
 import com.example.zinotes.data.HanziRepository
-import com.example.zinotes.data.OfflineHanziRepository
 import com.example.zinotes.data.network.HanziApiService
 import com.example.zinotes.room.HanziRoomDatabase
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -34,7 +33,7 @@ class ZiNotesApplication: Application() {
     }
 
     val repository: HanziRepository by lazy {
-        OfflineHanziRepository(
+        HanziRepository(
             database.hanziDao(),
             apiService = apiService,
             okHttpClient = okHttpClient

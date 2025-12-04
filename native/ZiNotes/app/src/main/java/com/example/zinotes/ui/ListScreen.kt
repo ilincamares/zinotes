@@ -47,19 +47,30 @@ fun ListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val isOnline by viewModel.isOnline.collectAsState()
+
     when (val state = uiState) {
         is ListUiState.Loading -> LoadingScreen(modifier = modifier)
         is ListUiState.Success -> {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.SpaceBetween,
                 modifier = modifier.fillMaxSize()
             ) {
-                AddButton(onAddClick)
-                HanziList(
-                    hanziList = state.hanziList,
-                    onItemClick = onItemClick,
+                ConnectionStatusBar(
+                    isOnline = isOnline,
+                    onRefresh = viewModel::retryConnection
                 )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom,
+                ) {
+                    AddButton(onAddClick)
+                    HanziList(
+                        hanziList = state.hanziList,
+                        onItemClick = onItemClick,
+                    )
+                }
             }
         }
         is ListUiState.Error -> ErrorScreen(state.message, modifier = modifier)
