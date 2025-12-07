@@ -1,6 +1,7 @@
 FROM gradle:8-jdk24 AS build
 WORKDIR /app
 COPY . .
+RUN chmod +x ./gradlew
 RUN ./gradlew bootJar -x test --no-daemon
 
 FROM eclipse-temurin:24-jdk-alpine
