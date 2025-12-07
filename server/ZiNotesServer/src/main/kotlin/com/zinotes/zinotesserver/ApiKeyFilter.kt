@@ -28,6 +28,8 @@ class ApiKeyFilter : Filter {
 
         val requestApiKey = httpRequest.getHeader("X-API-KEY")
 
+        println("Filter Check: Received '$requestApiKey' | Expected '$validApiKey'")
+
         if (validApiKey == requestApiKey) {
             chain.doFilter(request, response)
         } else {
