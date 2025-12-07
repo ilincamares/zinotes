@@ -53,7 +53,7 @@ fun ListScreen(
         is ListUiState.Loading -> LoadingScreen(modifier = modifier)
         is ListUiState.Success -> {
             Column(
-                horizontalAlignment = Alignment.Start,
+                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
                 modifier = modifier.fillMaxSize()
             ) {

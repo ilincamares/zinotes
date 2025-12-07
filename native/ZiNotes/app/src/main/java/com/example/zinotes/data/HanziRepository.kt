@@ -1,6 +1,7 @@
 package com.example.zinotes.data
 
 import android.util.Log
+import com.example.zinotes.BuildConfig
 import com.example.zinotes.data.network.HanziApiService
 import com.example.zinotes.room.Hanzi
 import com.example.zinotes.room.HanziDao
@@ -103,7 +104,10 @@ class HanziRepository(
             currentWebSocket?.close(1000, "Restarting")
         } catch (e: Exception){}
 
-        val request = Request.Builder().url("ws://localhost:8080/zinotes-sync").build()
+        val request = Request.Builder().
+            url("ws://zinotes-deploy.onrender.com/zinotes-sync")
+            .addHeader("X-API-KEY", BuildConfig.APP_API_KEY)
+            .build()
 
         val listener = object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
