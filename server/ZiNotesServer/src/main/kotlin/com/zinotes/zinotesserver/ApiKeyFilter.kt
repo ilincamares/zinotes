@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 @Component
 class ApiKeyFilter : Filter {
 
-    @Value("\${APP_API_KEY")
+    @Value("\${APP_API_KEY}")
     private lateinit var validApiKey: String
 
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
