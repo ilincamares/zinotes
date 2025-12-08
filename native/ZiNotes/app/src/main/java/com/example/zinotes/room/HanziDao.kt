@@ -35,4 +35,7 @@ interface HanziDao {
 
     @Query("DELETE FROM hanzi WHERE id = :id")
     suspend fun hardDelete(id: Long)
+
+    @Query("DELETE FROM hanzi WHERE id NOT IN (:validIds) AND isNew = 0")
+    suspend fun deleteOrphans(validIds: List<Long>)
 }

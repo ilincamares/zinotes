@@ -46,8 +46,19 @@ class HanziRepository(
                     Log.d("REPO", "Syncing data with server...")
 
                     syncPending()
+
                     val serverData = apiService.getHanzi()
+
                     hanziDao.insertAll(serverData)
+
+                    val serverIds = serverData.map { it.id }
+
+                    if (serverIds.isNotEmpty()) {
+                        hanziDao.deleteOrphans(serverIds)
+                    } else {
+                        hanziDao.deleteOrphans(listOf(-1L))
+                    }
+
 
                     Log.d("REPO", "Sync complete!")
                 } catch (e: Exception) {
